@@ -3,20 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Secure System</title>
+<title>CLASSIFIED ACCESS</title>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
 body{
+    margin:0;
     background:black;
-    overflow:hidden;
+    color:#00ff00;
     font-family:monospace;
-    color:#0f0;
+    overflow:hidden;
 }
 
 /* MATRIX */
@@ -29,52 +24,23 @@ body{
     z-index:-1;
 }
 
-/* SCREENS */
-#login,
-#terminal,
-#final{
+#terminal{
     position:absolute;
     width:100%;
     height:100%;
     display:flex;
-    flex-direction:column;
     justify-content:center;
     align-items:center;
-}
-
-/* LOGIN */
-input{
-    padding:12px;
-    width:250px;
-    background:black;
-    border:1px solid #0f0;
-    color:#0f0;
-    text-align:center;
-    outline:none;
-}
-
-button{
-    margin-top:15px;
-    padding:12px 25px;
-    background:#0f0;
-    border:none;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-/* TERMINAL */
-#terminal{
-    display:none;
+    flex-direction:column;
 }
 
 #text{
-    width:90%;
-    max-width:700px;
     white-space:pre-line;
-    line-height:1.8;
+    text-align:center;
+    font-size:18px;
+    padding:20px;
 }
 
-/* SCARE */
 #scare{
     position:fixed;
     inset:0;
@@ -88,11 +54,24 @@ button{
     object-fit:cover;
 }
 
+/* FLASH RED */
+#flash{
+    position:fixed;
+    inset:0;
+    background:red;
+    opacity:0;
+}
+
 /* FINAL */
 #final{
+    position:absolute;
+    width:100%;
+    height:100%;
     display:none;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
     color:white;
-    text-align:center;
 }
 
 /* SHAKE */
@@ -112,123 +91,99 @@ button{
 
 <body>
 
-<!-- MATRIX -->
 <canvas id="matrix"></canvas>
 
-<!-- LOGIN -->
-<div id="login">
-    <h1>SECURE ACCESS</h1>
-    <input id="code" placeholder="ENTER CODE">
-    <button onclick="startHack()">ENTER</button>
-</div>
-
-<!-- TERMINAL -->
 <div id="terminal">
-    <div id="text">Initializing...</div>
+    <div id="text">BOOTING CLASSIFIED SYSTEM...</div>
 </div>
 
-<!-- SCARE -->
+<div id="flash"></div>
+
 <div id="scare">
     <img src="https://i.imgur.com/7kLC6vH.jpg">
 </div>
 
-<!-- FINAL -->
 <div id="final">
-    <h1>😈 تم رصدك بواسطة الهاكر سيودة</h1>
-    <p>😂 بهزر يا بطل</p>
-    <button onclick="location.reload()">RESTART</button>
+    <h1>😈 تم رصد الهدف</h1>
+    <p>😂 متخفش يا معلم</p>
 </div>
 
 <audio id="scream" src="https://www.fesliyanstudios.com/play-mp3/4386"></audio>
 
 <script>
 
-window.onload = function(){
+/* MATRIX */
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
 
-    /* MATRIX */
-    const canvas = document.getElementById("matrix");
-    const ctx = canvas.getContext("2d");
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
 
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
+const letters = "01CLASSIFIEDHACKER$#@";
+const arr = letters.split("");
 
-    const letters = "01HACKER#$%&@";
-    const array = letters.split("");
+const fontSize = 14;
+const columns = canvas.width / fontSize;
+const drops = [];
 
-    const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    const drops = [];
+for(let i=0;i<columns;i++) drops[i]=1;
 
-    for(let i=0;i<columns;i++){
-        drops[i]=1;
-    }
+function draw(){
+    ctx.fillStyle="rgba(0,0,0,0.05)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    function draw(){
-        ctx.fillStyle="rgba(0,0,0,0.05)";
-        ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="#00ff00";
+    ctx.font=fontSize+"px monospace";
 
-        ctx.fillStyle="#0F0";
-        ctx.font=fontSize+"px monospace";
+    for(let i=0;i<drops.length;i++){
+        const text = arr[Math.floor(Math.random()*arr.length)];
+        ctx.fillText(text,i*fontSize,drops[i]*fontSize);
 
-        for(let i=0;i<drops.length;i++){
-            const text=array[Math.floor(Math.random()*array.length)];
-            ctx.fillText(text,i*fontSize,drops[i]*fontSize);
-
-            if(drops[i]*fontSize > canvas.height && Math.random()>0.975){
-                drops[i]=0;
-            }
-
-            drops[i]++;
+        if(drops[i]*fontSize > canvas.height && Math.random()>0.975){
+            drops[i]=0;
         }
+        drops[i]++;
     }
+}
+setInterval(draw,33);
 
-    setInterval(draw,33);
-};
-
-/* HACK TEXT */
+/* TERMINAL */
 const text = document.getElementById("text");
 const scream = document.getElementById("scream");
 
 const lines = [
-    "Connecting...",
+    "Connecting to secure server...",
     "Access granted...",
-    "Scanning system...",
-    "Tracking target...",
-    "Collecting data...",
-    "WARNING !!!",
-    "FINAL PROTOCOL..."
+    "Bypassing firewall...",
+    "Scanning device...",
+    "Tracking location...",
+    "Downloading data...",
+    "WARNING: UNKNOWN ACTIVITY DETECTED",
+    "FINAL PROTOCOL ACTIVATED..."
 ];
 
 let i = 0;
 
-function runHack(){
+window.onload = function(){
+    run();
+};
 
+function run(){
     if(i < lines.length){
-
-        text.innerHTML += "\n" + lines[i];
-
+        text.innerText += "\n" + lines[i];
         i++;
-
-        setTimeout(runHack,1000);
-
+        setTimeout(run, 900);
     } else {
-
-        finalScare();
+        scare();
     }
 }
 
-function startHack(){
-
-    document.getElementById("login").style.display="none";
-    document.getElementById("terminal").style.display="flex";
-
-    setTimeout(runHack,500);
-}
-
 /* SCARE */
-function finalScare(){
+function scare(){
 
     document.body.classList.add("shake");
+
+    document.getElementById("flash").style.opacity="0.7";
 
     document.getElementById("scare").style.display="block";
 
@@ -239,6 +194,8 @@ function finalScare(){
         document.body.classList.remove("shake");
 
         document.getElementById("scare").style.display="none";
+
+        document.getElementById("flash").style.opacity="0";
 
         document.getElementById("terminal").style.display="none";
 
