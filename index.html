@@ -54,7 +54,6 @@ body{
     object-fit:cover;
 }
 
-/* FLASH RED */
 #flash{
     position:fixed;
     inset:0;
@@ -62,7 +61,6 @@ body{
     opacity:0;
 }
 
-/* FINAL */
 #final{
     position:absolute;
     width:100%;
@@ -74,7 +72,6 @@ body{
     color:white;
 }
 
-/* SHAKE */
 .shake{
     animation:shake .1s infinite;
 }
@@ -94,7 +91,7 @@ body{
 <canvas id="matrix"></canvas>
 
 <div id="terminal">
-    <div id="text">BOOTING CLASSIFIED SYSTEM...</div>
+    <div id="text">BOOTING SYSTEM...</div>
 </div>
 
 <div id="flash"></div>
@@ -105,7 +102,7 @@ body{
 
 <div id="final">
     <h1>😈 تم رصد الهدف</h1>
-    <p> تم جمع المعلومات من هذا الجهاز تواصل معي يابطل علشان مأدكش</p>
+    <p>☠️ ACCESS TERMINATED • SYSTEM CONTROLLED</p>
 </div>
 
 <audio id="scream" src="https://www.fesliyanstudios.com/play-mp3/4386"></audio>
@@ -145,24 +142,29 @@ function draw(){
         drops[i]++;
     }
 }
+
 setInterval(draw,33);
 
-/* TERMINAL */
+/* NAME SYSTEM */
+const username = new URLSearchParams(window.location.search).get("name") || "UNKNOWN";
+
 const text = document.getElementById("text");
 const scream = document.getElementById("scream");
+
+let i = 0;
+let charIndex = 0;
+let typedName = "";
 
 const lines = [
     "Connecting to secure server...",
     "Access granted...",
     "Bypassing firewall...",
     "Scanning device...",
-    "Tracking location...",
+    "Tracking target: {NAME}",
     "Downloading data...",
     "WARNING: UNKNOWN ACTIVITY DETECTED",
     "FINAL PROTOCOL ACTIVATED..."
 ];
-
-let i = 0;
 
 window.onload = function(){
     run();
@@ -170,11 +172,36 @@ window.onload = function(){
 
 function run(){
     if(i < lines.length){
-        text.innerText += "\n" + lines[i];
-        i++;
-        setTimeout(run, 900);
+
+        if(lines[i].includes("{NAME}")){
+            typeWriter();
+        } else {
+            text.innerText += "\n" + lines[i];
+            i++;
+            setTimeout(run, 900);
+        }
+
     } else {
         scare();
+    }
+}
+
+/* TYPEWRITER */
+function typeWriter(){
+
+    if(charIndex < username.length){
+
+        typedName += username.charAt(charIndex);
+
+        text.innerText = text.innerText.split("{NAME}")[0] + typedName;
+
+        charIndex++;
+
+        setTimeout(typeWriter, 200);
+
+    } else {
+        i++;
+        setTimeout(run, 500);
     }
 }
 
